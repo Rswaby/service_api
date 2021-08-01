@@ -1,10 +1,10 @@
 'use strict';
 
-const { Model, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 const bycrypt = require('bcryptjs');
 // const { sequelize } = require('.');
 
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   class User extends Model {}
   User.init({
     id: {
@@ -43,7 +43,7 @@ module.exports = (sequelize) => {
       },
     },
     password: {
-      type: DataTypes.VIRTUAL,
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notNull: {
@@ -54,17 +54,23 @@ module.exports = (sequelize) => {
         },
         len: {
           args: [8, 20],
-          msg: 'The password should be between 8 and 20 characters in length'
+          msg: 'The password should be between 8 and 20 characters in length',
+        },
+        set(val) {
+          const hashedPassword = bycrypt.hashSync(val, 10);
+          this.setDataValue('password', hashedPassword);
         },
       },
     },
   }, { sequelize });// end user
-  User.associations = (models) => {
+  User.associate = (models) => {
     User.hasMany(models.Course, {
+      as: 'User',
       foreignKey: {
         fieldName: 'userId',
         allowNull: false,
       },
     });
   };
+  return User;
 };

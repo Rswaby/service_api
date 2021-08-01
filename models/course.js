@@ -1,10 +1,10 @@
 'use strict';
 
-const { Model, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 const bycrypt = require('bcryptjs');
 // const { sequelize } = require('.');
 
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   class Course extends Model {}
   Course.init({
     id: {
@@ -55,12 +55,14 @@ module.exports = (sequelize) => {
     //   },
     },
   }, { sequelize });// end course
-  Course.associations = (models) => {
+  Course.associate = (models) => {
     Course.belongsTo(models.User, {
+      as: 'User',
       foreignKey: {
         fieldName: 'userId',
         allowNull: false,
       },
     });
   };
+  return Course;
 };
