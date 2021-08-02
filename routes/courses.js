@@ -2,6 +2,7 @@
 
 const express = require('express');
 const models = require('../models');
+const authenticate = require('../middleware/authenticate');
 const asynchandler = require('../middleware/async-handler');
 
 const router = express.Router();
@@ -20,7 +21,7 @@ router.get('/', asynchandler(async (req, res) => {
   res.json(courses);
 }));
 
-router.post('/', asynchandler(async (req, res) => {
+router.post('/', authenticate, asynchandler(async (req, res) => {
   // console.log('create new course....  ', req.body);
   try {
     const newCourse = await Course.create(req.body);
@@ -53,7 +54,7 @@ router.get('/:id', asynchandler(async (req, res) => {
   }
 }));
 
-router.put('/:id', asynchandler(async (req, res) => {
+router.put('/:id', authenticate, asynchandler(async (req, res) => {
   const oldCourse = await Course.findByPk(req.params.id);
   try {
     console.dir(oldCourse);
@@ -70,7 +71,7 @@ router.put('/:id', asynchandler(async (req, res) => {
   }
 }));
 
-router.delete('/:id', asynchandler(async (req, res) => {
+router.delete('/:id', authenticate, asynchandler(async (req, res) => {
   const course = await Course.findByPk(req.params.id);
   if (course) {
     await course.destroy();

@@ -23,36 +23,18 @@ module.exports = (sequelize, DataTypes) => {
     },
     description: {
       type: DataTypes.STRING,
-    //   allowNull: false,
-    //   validate: {
-    //     notNull: {
-    //       msg: 'lastName is required',
-    //     },
-    //   },
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'description is required',
+        },
+      },
     },
     estimatedTime: {
       type: DataTypes.STRING,
-    //   allowNull: false,
-    //   unique: {
-    //     msg: 'Email already exist',
-    //   },
-    //   validate: {
-    //     notNull: {
-    //       msg: 'lastName is required',
-    //     },
-    //   },
     },
     materialsNeeded: {
       type: DataTypes.VIRTUAL,
-      allowNull: false,
-    //   validate: {
-    //     notNull: {
-    //       msg: 'A password is required',
-    //     },
-    //     notEmpty: {
-    //       msg: 'Please provide a password',
-    //     },
-    //   },
     },
   }, { sequelize });// end course
   Course.associate = (models) => {

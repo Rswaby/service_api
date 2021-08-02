@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       validate: {
         notNull: {
-          msg: 'lastName is required',
+          msg: 'email address is required',
         },
       },
     },

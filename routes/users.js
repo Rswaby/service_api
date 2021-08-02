@@ -2,6 +2,7 @@
 
 const express = require('express');
 const models = require('../models');
+const authenticate = require('../middleware/authenticate');
 const asynchandler = require('../middleware/async-handler');
 
 const router = express.Router();
@@ -10,7 +11,7 @@ const SQUELIZE_ERROR = 'SequelizeValidationError';
 /**
  * / Router used to dsiplay friendly message
  */
-router.get('/', asynchandler(async (req, res) => {
+router.get('/', authenticate, asynchandler(async (req, res) => {
   // console.dir(models);
   const users = await User.findAll({
     attributes: { exclude: ['password'] },
