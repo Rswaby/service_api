@@ -21,7 +21,7 @@ only users who are authenticated can retrieve other user information, create a n
 ```sh
 git clone git@github.com:Rswaby/service_api.git
 cd service_api
-npm run seed (optional)
+npm run seed (optional: populate db)
 npm install
 npm start
 ```
