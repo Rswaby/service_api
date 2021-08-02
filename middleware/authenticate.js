@@ -6,14 +6,11 @@ const { User } = require('../models');
 
 const authenticate = async (req, res, next) => {
   let message;
-  const { name, pass } = auth(req);
-  const credentials = {
-    email: name,
-    pass,
-  };
+
+  const credentials = auth(req);
 
   if (credentials) {
-    const user = await User.findOne({ where: { emailAddress: credentials.email } });
+    const user = await User.findOne({ where: { emailAddress: credentials.name } });
     if (user) {
       const authenticated = bycrypt.compareSync(credentials.pass, user.password);
       if (authenticated) {
@@ -25,7 +22,7 @@ const authenticate = async (req, res, next) => {
         message = `Authentication failure for username: ${user.emailAddress}`;
       }// auth check
     } else {
-      message = `User not found for username: ${credentials.email}`;
+      message = `User not found for username: ${credentials.name}`;
     }// no user check
   } else {
     message = 'Auth header not found';

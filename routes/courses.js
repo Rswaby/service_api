@@ -13,12 +13,10 @@ const SQUELIZE_ERROR = 'SequelizeValidationError';
  */
 router.get('/', asynchandler(async (req, res) => {
   const courses = await Course.findAll({
-    include: [{
-      model: User,
-      as: 'User',
-    }],
+    include: [{ model: User, as: 'User', attributes: { exclude: ['createdAt', 'updatedAt', 'password'] } }],
+    attributes: { exclude: ['createdAt', 'updatedAt', 'userId'] },
   });
-  res.json(courses);
+  res.status(200).json(courses);
 }));
 
 router.post('/', authenticate, asynchandler(async (req, res) => {
@@ -55,11 +53,19 @@ router.get('/:id', asynchandler(async (req, res) => {
 }));
 
 router.put('/:id', authenticate, asynchandler(async (req, res) => {
+  const user = req.currentUser;
   const oldCourse = await Course.findByPk(req.params.id);
   try {
-    console.dir(oldCourse);
-    const updated = await oldCourse.update(req.body);
-    res.status(200).json(updated);
+    if (oldCourse) {
+      if (oldCourse.userId === user.id) {
+        const updated = await oldCourse.update(req.body);
+        res.status(204).json(updated);
+      } else {
+        res.status(403).json({ message: 'permission denied' });
+      }
+    } else {
+      res.status(404).json({ message: 'course not found' });
+    }
   } catch (error) {
     const { name, errors } = error;
     if (name === SQUELIZE_ERROR) {
@@ -73,9 +79,14 @@ router.put('/:id', authenticate, asynchandler(async (req, res) => {
 
 router.delete('/:id', authenticate, asynchandler(async (req, res) => {
   const course = await Course.findByPk(req.params.id);
+  const user = req.currentUser;
   if (course) {
-    await course.destroy();
-    res.status(200).end();
+    if (course.userId === user.id) {
+      await course.destroy();
+      res.status(204).end();
+    } else {
+      res.status(403).json({ message: 'permission denied' });
+    }
   } else {
     res.status(404).json({ message: 'course not found' });
   }
