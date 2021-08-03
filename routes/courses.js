@@ -37,6 +37,7 @@ router.post('/', authenticate, asynchandler(async (req, res) => {
   // console.log('create new course....  ', req.body);
   try {
     const newCourse = await Course.create(req.body);
+    res.set('Location', `/api/courses/${newCourse.id}`);
     res.status(201).end();
   } catch (err) {
     const { name, errors } = err;

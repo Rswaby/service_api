@@ -19,12 +19,13 @@ const SQUELIZE_ERROR_CONSTRAIN = 'SequelizeUniqueConstraintError';
     },..]
  */
 router.get('/', authenticate, asynchandler(async (req, res) => {
-  // console.dir(models);
-  // return all users in User table without password, createdAt and updatedAt
-  const users = await User.findAll({
-    attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+  const user = req.currentUser;
+  res.json({
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    emailAddress: user.emailAddress,
   });
-  res.json(users);
 }));
 /**
  * Post: Create a new users without authentication
@@ -32,7 +33,8 @@ router.get('/', authenticate, asynchandler(async (req, res) => {
 router.post('/', asynchandler(async (req, res) => {
   try {
     const user = await User.create(req.body);
-    res.status(200).json(user);
+    res.set('Location', '/');
+    res.status(201).end();
   } catch (error) {
     const { name, errors } = error;
     // check if request has missing infomation or voilates unique key constrain

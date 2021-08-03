@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
       validate: {
         notNull: {
@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
     },
     materialsNeeded: {
-      type: DataTypes.VIRTUAL,
+      type: DataTypes.STRING,
     },
   }, { sequelize });// end course
   Course.associate = (models) => {
